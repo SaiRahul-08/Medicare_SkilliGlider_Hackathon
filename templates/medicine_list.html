@@ -1,0 +1,469 @@
+{% extends 'base.html' %} {% block content %}
+
+<div class="page-header">
+  <h1>Medicine List</h1>
+
+  <p>Manage all your medicines here.</p>
+</div>
+
+{% if medicines %}
+
+<div class="medicine-list-container">
+  {% for medicine in medicines %}
+
+  <div class="medicine-card">
+    {% if medicine.stock|int <= 5 %}
+
+    <span class="low-stock-badge"> Low Stock </span>
+
+    {% endif %}
+
+    <h2>{{ medicine.name }}</h2>
+
+    <div class="medicine-info">
+      <div class="info-row">
+        <i class="fa-solid fa-capsules"></i>
+
+        <span> Dosage: {{ medicine.dosage }} </span>
+      </div>
+
+      <div class="info-row">
+        <i class="fa-solid fa-clock"></i>
+
+        <span> Timing: {{ medicine.timing }} {{ medicine.period }} </span>
+      </div>
+
+      <div class="info-row">
+        <i class="fa-solid fa-box"></i>
+
+        <span> Stock: {{ medicine.stock }} </span>
+      </div>
+    </div>
+
+    <!-- ACTION BUTTONS -->
+
+    <div class="medicine-actions">
+      <a
+        href="{{ url_for('medicine_bp.edit_medicine', id=medicine.id) }}"
+        class="edit-btn"
+      >
+        <i class="fa-solid fa-pen"></i>
+
+        Edit
+      </a>
+
+      <a
+        href="{{ url_for('medicine_bp.delete_medicine', id=medicine.id) }}"
+        class="delete-btn"
+        onclick="return confirm('Delete this medicine?');"
+      >
+        <i class="fa-solid fa-trash"></i>
+
+        Delete
+      </a>
+    </div>
+  </div>
+
+  {% endfor %}
+</div>
+
+{% else %}
+
+<div class="empty-state">
+  <h2>No Medicines Added</h2>
+
+  <p>Add medicines to start tracking reminders.</p>
+</div>
+
+{% endif %}
+
+<!-- =========================================
+ALARM AUDIO
+========================================= -->
+
+<audio id="alarmSound" preload="auto" loop>
+  <source
+    src="{{ url_for('static', filename='sounds/alarm.mp3') }}"
+    type="audio/mpeg"
+  />
+</audio>
+
+<!-- =========================================
+ALARM MODAL
+========================================= -->
+
+<div id="alarmModal" class="alarm-modal">
+  <div class="alarm-box">
+    <div class="alarm-icon">
+      <i class="fa-solid fa-bell"></i>
+    </div>
+
+    <h2>Medicine Reminder 💊</h2>
+
+    <p id="alarmMedicineName">Time to take medicine</p>
+
+    <button id="stopAlarmBtn">
+      <i class="fa-solid fa-xmark"></i>
+
+      Stop Alarm
+    </button>
+  </div>
+</div>
+
+<!-- =========================================
+ALARM STYLES
+========================================= -->
+
+<style>
+  .alarm-modal {
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.65);
+
+    backdrop-filter: blur(5px);
+
+    display: none;
+
+    justify-content: center;
+
+    align-items: center;
+
+    z-index: 99999;
+  }
+
+  .alarm-modal.show {
+    display: flex;
+  }
+
+  .alarm-box {
+    width: 90%;
+
+    max-width: 430px;
+
+    background: white;
+
+    border-radius: 28px;
+
+    padding: 40px 30px;
+
+    text-align: center;
+
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+
+    animation: popupAnimation 0.35s ease;
+  }
+
+  .alarm-icon {
+    width: 95px;
+
+    height: 95px;
+
+    margin: auto;
+
+    border-radius: 50%;
+
+    background: #2563eb;
+
+    color: white;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    font-size: 42px;
+
+    margin-bottom: 22px;
+
+    animation: ringBell 1s infinite;
+  }
+
+  .alarm-box h2 {
+    font-size: 34px;
+
+    font-weight: 800;
+
+    color: #111827;
+
+    margin-bottom: 14px;
+  }
+
+  .alarm-box p {
+    font-size: 23px;
+
+    color: #374151;
+
+    margin-bottom: 30px;
+  }
+
+  #stopAlarmBtn {
+    border: none;
+
+    background: #ef4444;
+
+    color: white;
+
+    width: 100%;
+
+    padding: 16px;
+
+    border-radius: 14px;
+
+    font-size: 18px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+  }
+
+  #stopAlarmBtn:hover {
+    background: #dc2626;
+  }
+
+  @keyframes popupAnimation {
+    from {
+      transform: scale(0.7);
+      opacity: 0;
+    }
+
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes ringBell {
+    0% {
+      transform: rotate(0deg);
+    }
+    25% {
+      transform: rotate(10deg);
+    }
+    50% {
+      transform: rotate(-10deg);
+    }
+    75% {
+      transform: rotate(10deg);
+    }
+    100% {
+      transform: rotate(0deg);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .alarm-box {
+      padding: 30px 22px;
+    }
+
+    .alarm-box h2 {
+      font-size: 28px;
+    }
+
+    .alarm-box p {
+      font-size: 19px;
+    }
+  }
+</style>
+
+<!-- =========================================
+ALARM SCRIPT
+========================================= -->
+
+<script>
+
+  const medicines = {{ medicines | tojson | safe }};
+
+  console.log("Medicines Loaded:", medicines);
+
+  const alarmAudio =
+      document.getElementById("alarmSound");
+
+  let audioUnlocked = false;
+
+  const triggeredReminders = {};
+
+  /* =========================================
+  UNLOCK AUDIO
+  ========================================= */
+
+  document.addEventListener("click", () => {
+
+      if(audioUnlocked) return;
+
+      alarmAudio.play()
+      .then(() => {
+
+          alarmAudio.pause();
+
+          alarmAudio.currentTime = 0;
+
+          audioUnlocked = true;
+
+          console.log("Audio unlocked successfully");
+
+      })
+      .catch((error) => {
+
+          console.log("Audio unlock failed:", error);
+      });
+
+  }, { once:true });
+
+  /* =========================================
+  NOTIFICATION PERMISSION
+  ========================================= */
+
+  if("Notification" in window){
+
+      Notification.requestPermission();
+  }
+
+  /* =========================================
+  SHOW ALARM
+  ========================================= */
+
+  function showAlarm(medicineName){
+
+      console.log("Alarm Triggered");
+
+      document
+          .getElementById("alarmMedicineName")
+          .innerText =
+          `Take ${medicineName} in 5 minutes`;
+
+      document
+          .getElementById("alarmModal")
+          .classList
+          .add("show");
+
+      alarmAudio.currentTime = 0;
+
+      alarmAudio.play();
+
+      if(Notification.permission === "granted"){
+
+          new Notification("Medicine Reminder 💊", {
+
+              body:`Take ${medicineName} in 5 minutes`
+          });
+      }
+  }
+
+  /* =========================================
+  STOP ALARM
+  ========================================= */
+
+  function stopAlarm(){
+
+      alarmAudio.pause();
+
+      alarmAudio.currentTime = 0;
+
+      document
+          .getElementById("alarmModal")
+          .classList
+          .remove("show");
+  }
+
+  document
+      .getElementById("stopAlarmBtn")
+      .addEventListener("click", stopAlarm);
+
+  /* =========================================
+  CHECK REMINDER
+  ========================================= */
+
+  function checkMedicineReminder(){
+
+      const now = new Date();
+
+      const currentHour =
+          now.getHours();
+
+      const currentMinute =
+          now.getMinutes();
+
+      medicines.forEach((medicine) => {
+
+          if(!medicine.timing) return;
+
+          const parts =
+              medicine.timing.split(":");
+
+          let medHour =
+              parseInt(parts[0]);
+
+          let medMinute =
+              parseInt(parts[1]);
+
+          /* CONVERT TO 24 HOUR */
+
+          if(
+              medicine.period === "PM" &&
+              medHour !== 12
+          ){
+              medHour += 12;
+          }
+
+          if(
+              medicine.period === "AM" &&
+              medHour === 12
+          ){
+              medHour = 0;
+          }
+
+          /* 5 MINUTES BEFORE */
+
+          medMinute -= 5;
+
+          if(medMinute < 0){
+
+              medMinute += 60;
+
+              medHour -= 1;
+          }
+
+          if(medHour < 0){
+
+              medHour = 23;
+          }
+
+          const reminderKey =
+              medicine.name +
+              "-" +
+              medHour +
+              "-" +
+              medMinute;
+
+          console.log(
+              medicine.name,
+              medHour,
+              medMinute
+          );
+
+          if(
+              currentHour === medHour &&
+              currentMinute === medMinute &&
+              !triggeredReminders[reminderKey]
+          ){
+
+              triggeredReminders[reminderKey] = true;
+
+              showAlarm(medicine.name);
+          }
+      });
+  }
+
+  /* =========================================
+  RUN EVERY 5 SECONDS
+  ========================================= */
+
+  setInterval(checkMedicineReminder, 5000);
+</script>
+
+{% endblock %}

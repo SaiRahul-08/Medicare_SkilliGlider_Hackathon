@@ -1,0 +1,99 @@
+{% extends 'base.html' %} {% block content %}
+
+<div class="form-container">
+  <form method="POST" class="medicine-form">
+    <h1 class="heading">
+      <i class="fa-solid fa-capsules"></i>
+      Add Medicine
+    </h1>
+
+    <!-- MEDICINE NAME -->
+
+    <div class="input-group">
+      <label>Medicine Name</label>
+
+      <input
+        type="text"
+        name="name"
+        placeholder="Enter medicine name"
+        required
+      />
+    </div>
+
+    <!-- DOSAGE -->
+
+    <div class="input-group">
+      <label>Dosage</label>
+
+      <input type="text" name="dosage" placeholder="e.g. 500mg" required />
+    </div>
+
+    <!-- MEDICINE TIME -->
+
+    <div class="input-group">
+      <label class="time-label"> Medicine Time </label>
+
+      <div class="time-picker-group">
+        <!-- HOUR -->
+
+        <select name="hour" required class="time-select">
+          <option value="">HH</option>
+
+          {% for i in range(1,13) %}
+
+          <option value="{{ '%02d' % i }}">{{ '%02d' % i }}</option>
+
+          {% endfor %}
+        </select>
+
+        <!-- MINUTE -->
+
+        <select name="minute" required class="time-select">
+          <option value="">MM</option>
+
+          {% for i in range(0,60) %}
+
+          <option value="{{ '%02d' % i }}">{{ '%02d' % i }}</option>
+
+          {% endfor %}
+        </select>
+
+        <!-- AM PM -->
+
+        <select name="period" required class="time-select period-select">
+          <option value="AM">AM</option>
+
+          <option value="PM">PM</option>
+        </select>
+      </div>
+
+      <small class="helper-text">
+        Alarm will ring 5 minutes before medicine time
+      </small>
+    </div>
+
+    <!-- STOCK -->
+
+    <div class="input-group">
+      <label>Stock Quantity</label>
+
+      <input
+        type="number"
+        name="stock"
+        placeholder="Enter stock quantity"
+        min="1"
+        required
+      />
+    </div>
+
+    <!-- BUTTON -->
+
+    <button type="submit" class="btn">
+      <i class="fa-solid fa-floppy-disk"></i>
+
+      Save Medicine
+    </button>
+  </form>
+</div>
+
+{% endblock %}

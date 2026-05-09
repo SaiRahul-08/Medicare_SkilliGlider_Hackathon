@@ -1,0 +1,112 @@
+{% extends 'base.html' %} {% block content %}
+
+<div class="modern-profile-page">
+  <div class="modern-profile-card">
+    <div class="profile-top-section">
+      <div class="modern-profile-image-box">
+        {% if user.profile_pic %}
+
+        <img
+          src="{{ url_for('static', filename=user.profile_pic) }}"
+          class="modern-profile-image"
+        />
+
+        {% else %}
+
+        <img
+          src="{{ url_for('static', filename='images/default_profile.jpg') }}"
+          class="modern-profile-image"
+        />
+
+        {% endif %}
+
+        <a href="/edit-profile" class="image-edit-btn">
+          <i class="fa-solid fa-camera"></i>
+        </a>
+      </div>
+
+      <div class="modern-profile-info">
+        <h1>{{ user.name }}</h1>
+
+        <p class="profile-username">@{{ user.username }}</p>
+
+        <div class="profile-badges">
+          <span>
+            <i class="fa-solid fa-envelope"></i>
+            {{ user.email }}
+          </span>
+
+          <span>
+            <i class="fa-solid fa-user"></i>
+            {{ user.sex or 'Not Added' }}
+          </span>
+
+          <span>
+            <i class="fa-solid fa-cake-candles"></i>
+            {{ user.age or 'N/A' }} Years
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-grid">
+      <div class="info-card">
+        <h3>
+          <i class="fa-solid fa-id-card"></i>
+          Personal Information
+        </h3>
+
+        <div class="info-row">
+          <span>Date of Birth</span>
+          <strong>{{ user.dob or 'Not Added' }}</strong>
+        </div>
+
+        <div class="info-row">
+          <span>Doctor Name</span>
+          <strong>{{ user.doctor or 'Not Added' }}</strong>
+        </div>
+
+        <div class="info-row">
+          <span>Height</span>
+          <strong>{{ user.height or 'N/A' }} cm</strong>
+        </div>
+
+        <div class="info-row">
+          <span>Weight</span>
+          <strong>{{ user.weight or 'N/A' }} kg</strong>
+        </div>
+      </div>
+
+      <div class="bmi-modern-card">
+        <h3>
+          <i class="fa-solid fa-heart-pulse"></i>
+          BMI Analysis
+        </h3>
+
+        <div class="bmi-circle">{{ bmi }}</div>
+
+        <p class="bmi-status">{{ bmi_status }}</p>
+      </div>
+    </div>
+
+    <div class="profile-stats">
+      <div class="stat-box">
+        <i class="fa-solid fa-capsules"></i>
+
+        <h2>{{ total_medicines }}</h2>
+
+        <p>Medicines</p>
+      </div>
+    </div>
+
+    <div class="profile-action-buttons">
+      <a href="/edit-profile" class="profile-main-btn">
+        <i class="fa-solid fa-pen"></i>
+
+        Edit Profile
+      </a>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

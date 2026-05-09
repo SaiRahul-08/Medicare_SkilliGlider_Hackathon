@@ -1,0 +1,34 @@
+{% extends 'base.html' %} {% block content %}
+
+<div class="settings-page">
+  <h1>Settings</h1>
+
+  <div class="setting-card">
+    <div class="setting-item">
+      <div>
+        <h2>Notifications</h2>
+        <p>Enable medicine reminder alerts.</p>
+      </div>
+
+      <button onclick="enableNotifications()" class="notify-btn">
+        Enable Notifications
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // NOTIFICATIONS
+
+  function enableNotifications() {
+    Notification.requestPermission().then((permission) => {
+      if (permission === "granted") {
+        new Notification("MediTrack Notifications Enabled");
+      } else {
+        alert("Notification permission denied");
+      }
+    });
+  }
+</script>
+
+{% endblock %}

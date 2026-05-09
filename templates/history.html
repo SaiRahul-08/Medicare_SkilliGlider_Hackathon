@@ -1,0 +1,87 @@
+{% extends 'base.html' %} {% block content %}
+
+<div class="history-page">
+  <!-- PAGE HEADER -->
+
+  <div class="top-right-clock">
+    <div id="live-date"></div>
+
+    <div id="liveClock"></div>
+  </div>
+
+  <div class="history-header">
+    <div>
+      <h1 class="history-title">Medicine History</h1>
+
+      <p class="history-subtitle">
+        Track all recently used medicines and actions.
+      </p>
+    </div>
+  </div>
+
+  <!-- FLOATING CLOCK -->
+
+  <!-- HISTORY CONTENT -->
+
+  {% if history %}
+
+  <div class="history-container">
+    {% for item in history[::-1] %}
+
+    <div class="history-card">
+      <i class="fa-solid fa-clock-rotate-left"></i>
+
+      <span>{{ item }}</span>
+    </div>
+
+    {% endfor %}
+  </div>
+
+  {% else %}
+
+  <div class="empty-state">
+    <h2>No History Available</h2>
+
+    <p>Your medicine activity will appear here.</p>
+  </div>
+
+  {% endif %}
+
+  <!-- FLOATING CLEAR BUTTON -->
+
+  <a href="/clear-history" class="clear-btn fixed-clear-btn">
+    <i class="fa-solid fa-trash"></i>
+
+    Clear History
+  </a>
+</div>
+
+<!-- CLOCK SCRIPT -->
+
+<script>
+  function updateClock() {
+    const now = new Date();
+
+    const time = now.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+
+    const date = now.toLocaleDateString([], {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+
+    document.getElementById("liveClock").innerText = time;
+
+    document.getElementById("live-date").innerText = date;
+  }
+
+  setInterval(updateClock, 1000);
+
+  updateClock();
+</script>
+
+{% endblock %}

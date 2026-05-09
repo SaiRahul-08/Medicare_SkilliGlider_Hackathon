@@ -1,0 +1,320 @@
+{% extends 'base.html' %} {% block content %}
+
+<!-- =========================================
+NOTIFICATIONS PAGE
+========================================= -->
+
+<div class="notifications-page">
+  <!-- PAGE HEADER -->
+
+  <div class="page-header">
+    <h1>
+      <i class="fa-solid fa-bell"></i>
+      Notifications
+    </h1>
+
+    <p>Stay updated with reminders and alerts.</p>
+  </div>
+
+  <!-- NOTIFICATION LIST -->
+
+  {% if alerts %}
+
+  <div class="notification-container">
+    {% for alert in alerts %}
+
+    <div class="notification-card">
+      <!-- ICON -->
+
+      <div
+        class="notification-icon {% if 'Low Stock' in alert.title %} low-stock {% else %} reminder {% endif %}"
+      >
+        {% if 'Low Stock' in alert.title %}
+
+        <i class="fa-solid fa-triangle-exclamation"></i>
+
+        {% else %}
+
+        <i class="fa-solid fa-bell"></i>
+
+        {% endif %}
+      </div>
+
+      <!-- CONTENT -->
+
+      <div class="notification-content">
+        <h3>{{ alert.title }}</h3>
+
+        <p>{{ alert.message }}</p>
+      </div>
+    </div>
+
+    {% endfor %}
+  </div>
+
+  {% else %}
+
+  <!-- EMPTY STATE -->
+
+  <div class="empty-state">
+    <div class="empty-icon">
+      <i class="fa-regular fa-bell-slash"></i>
+    </div>
+
+    <h2>No Notifications</h2>
+
+    <p>You have no reminders or alerts right now.</p>
+  </div>
+
+  {% endif %}
+</div>
+
+<!-- =========================================
+NOTIFICATIONS PAGE CSS
+========================================= -->
+
+<style>
+  /* PAGE */
+
+  .notifications-page {
+    width: 100%;
+  }
+
+  /* HEADER */
+
+  .page-header {
+    margin-bottom: 35px;
+  }
+
+  .page-header h1 {
+    font-size: 64px;
+
+    font-weight: 900;
+
+    color: #0f172a;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 16px;
+
+    margin-bottom: 12px;
+  }
+
+  .page-header h1 i {
+    color: #2563eb;
+  }
+
+  .page-header p {
+    font-size: 24px;
+
+    color: #64748b;
+  }
+
+  /* CONTAINER */
+
+  .notification-container {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 24px;
+
+    padding-right: 320px;
+  }
+
+  /* CARD */
+
+  .notification-card {
+    background: white;
+
+    border-radius: 24px;
+
+    padding: 24px;
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 20px;
+
+    border: 1px solid #e2e8f0;
+
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+
+    transition: 0.3s ease;
+  }
+
+  .notification-card:hover {
+    transform: translateY(-3px);
+
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+  }
+
+  /* ICON */
+
+  .notification-icon {
+    width: 70px;
+
+    height: 70px;
+
+    min-width: 70px;
+
+    border-radius: 20px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    font-size: 28px;
+
+    color: white;
+  }
+
+  .notification-icon.reminder {
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+  }
+
+  .notification-icon.low-stock {
+    background: linear-gradient(135deg, #ef4444, #f97316);
+  }
+
+  /* CONTENT */
+
+  .notification-content {
+    flex: 1;
+  }
+
+  .notification-content h3 {
+    font-size: 30px;
+
+    font-weight: 800;
+
+    color: #0f172a;
+
+    margin-bottom: 10px;
+  }
+
+  .notification-content p {
+    font-size: 20px;
+
+    color: #475569;
+
+    line-height: 1.6;
+  }
+
+  /* EMPTY STATE */
+
+  .empty-state {
+    background: white;
+
+    border-radius: 30px;
+
+    padding: 70px 30px;
+
+    text-align: center;
+
+    border: 1px solid #e2e8f0;
+
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+
+    max-width: 900px;
+  }
+
+  .empty-icon {
+    width: 120px;
+
+    height: 120px;
+
+    margin: auto;
+
+    border-radius: 50%;
+
+    background: #eff6ff;
+
+    color: #2563eb;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    font-size: 50px;
+
+    margin-bottom: 25px;
+  }
+
+  .empty-state h2 {
+    font-size: 42px;
+
+    font-weight: 800;
+
+    color: #0f172a;
+
+    margin-bottom: 15px;
+  }
+
+  .empty-state p {
+    font-size: 22px;
+
+    color: #64748b;
+  }
+
+  /* RESPONSIVE */
+
+  @media (max-width: 1200px) {
+    .notification-container {
+      padding-right: 0;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .page-header h1 {
+      font-size: 42px;
+    }
+
+    .page-header p {
+      font-size: 18px;
+    }
+
+    .notification-card {
+      padding: 18px;
+
+      gap: 15px;
+    }
+
+    .notification-icon {
+      width: 55px;
+      height: 55px;
+      min-width: 55px;
+
+      font-size: 22px;
+    }
+
+    .notification-content h3 {
+      font-size: 22px;
+    }
+
+    .notification-content p {
+      font-size: 16px;
+    }
+
+    .empty-state {
+      padding: 50px 20px;
+    }
+
+    .empty-state h2 {
+      font-size: 30px;
+    }
+
+    .empty-state p {
+      font-size: 18px;
+    }
+  }
+</style>
+
+{% endblock %}

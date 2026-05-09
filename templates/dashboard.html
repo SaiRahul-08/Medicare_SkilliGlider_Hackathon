@@ -1,0 +1,108 @@
+{% extends 'base.html' %} {% block content %}
+
+<div class="dashboard-page">
+  <!-- TOP SECTION -->
+
+  <div class="top-right-clock">
+    <div id="live-date"></div>
+
+    <div id="liveClock"></div>
+  </div>
+
+  <div class="dashboard-top-bar">
+    <!-- LEFT -->
+
+    <div class="dashboard-heading">
+      <h1 class="dashboard-title" id="greetingText">
+        Good Morning
+        <span class="sun-icon">☀️</span>
+      </h1>
+
+      <p class="dashboard-subtitle" id="quoteText">
+        Stay healthy and never miss your medicines.
+      </p>
+    </div>
+
+    <!-- RIGHT -->
+
+    <div class="dashboard-right-section">
+      <!-- CLOCK -->
+
+      <div class="top-right-clock">
+        <span id="live-date"></span>
+
+        <span id="live-time"></span>
+      </div>
+
+      <!-- WATER TRACKER -->
+
+      <div class="water-card">
+        <div class="water-top">
+          <h2>
+            <i class="fa-solid fa-glass-water"></i>
+            Water Tracker
+          </h2>
+
+          <span id="waterCount">0 / 8 Glasses</span>
+        </div>
+
+        <div class="water-progress">
+          <div class="water-progress-bar" id="waterProgressBar"></div>
+        </div>
+
+        <button class="drink-btn" onclick="drinkWater()">Drink Water</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD CARDS -->
+
+  <div class="dashboard-cards">
+    <!-- TOTAL MEDICINES -->
+
+    <div class="dashboard-card total-card">
+      <div class="card-icon blue">
+        <i class="fa-solid fa-pills"></i>
+      </div>
+
+      <div>
+        <h3>Total Medicines</h3>
+
+        <h1>{{ total_medicines }}</h1>
+      </div>
+    </div>
+
+    <!-- LOW STOCK -->
+
+    <div class="dashboard-card warning-card">
+      <div class="card-icon red">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+
+      <div>
+        <h3>Low Stock</h3>
+
+        <h1>{{ low_stock }}</h1>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEALTH TIP -->
+
+  <div class="health-tip-card">
+    <h2>
+      <i class="fa-solid fa-heart-pulse"></i>
+      Today's Health Tip
+    </h2>
+
+    <p id="healthTip">
+      Drink enough water and maintain proper sleep for better health.
+    </p>
+  </div>
+</div>
+
+<!-- DASHBOARD SCRIPT -->
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+
+{% endblock %}

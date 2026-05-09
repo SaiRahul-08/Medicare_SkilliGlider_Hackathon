@@ -1,0 +1,265 @@
+  /* =========================================
+    DASHBOARD PAGE
+  ========================================= */
+
+  .dashboard-page{
+      width:100%;
+  }
+
+  /* =========================================
+    HERO SECTION
+  ========================================= */
+
+  .dashboard-hero{
+      display:grid;
+      grid-template-columns:1fr 360px;
+      gap:35px;
+      align-items:start;
+      margin-bottom:40px;
+  }
+
+  /* LEFT */
+
+  .dashboard-title{
+      font-size:72px;
+      font-weight:900;
+      line-height:1.1;
+      color:#0f172a;
+      margin-bottom:16px;
+  }
+
+  .dashboard-subtitle{
+      font-size:24px;
+      color:#475569;
+      line-height:1.7;
+      max-width:700px;
+  }
+
+  /* =========================================
+    WATER TRACKER
+  ========================================= */
+
+  .water-card{
+      background:white;
+      border-radius:28px;
+      padding:28px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.06);
+      border:1px solid #e2e8f0;
+  }
+
+  .water-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:20px;
+  }
+
+  .water-top h2{
+      font-size:26px;
+      font-weight:800;
+      color:#0f172a;
+
+      display:flex;
+      align-items:center;
+      gap:10px;
+  }
+
+  .water-top span{
+      font-size:18px;
+      font-weight:700;
+      color:#2563eb;
+  }
+
+  .water-progress{
+      width:100%;
+      height:16px;
+      background:#dbeafe;
+      border-radius:50px;
+      overflow:hidden;
+      margin-bottom:22px;
+  }
+
+  .water-progress-bar{
+      height:100%;
+      width:0%;
+      border-radius:50px;
+
+      background:linear-gradient(
+          90deg,
+          #38bdf8,
+          #2563eb
+      );
+
+      transition:0.4s;
+  }
+
+  .drink-btn{
+      width:100%;
+      border:none;
+      padding:16px;
+      border-radius:16px;
+
+      background:linear-gradient(
+          135deg,
+          #2563eb,
+          #1d4ed8
+      );
+
+      color:white;
+      font-size:18px;
+      font-weight:700;
+      cursor:pointer;
+      transition:0.3s;
+  }
+
+  .drink-btn:hover{
+      transform:translateY(-2px);
+  }
+
+  /* =========================================
+    DASHBOARD CARDS
+  ========================================= */
+
+  .dashboard-cards{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+      gap:30px;
+      margin-bottom:40px;
+  }
+
+  .dashboard-card{
+      background:white;
+      border-radius:30px;
+      padding:35px;
+
+      display:flex;
+      align-items:center;
+      gap:25px;
+
+      box-shadow:0 10px 30px rgba(0,0,0,0.06);
+
+      transition:0.3s;
+  }
+
+  .dashboard-card:hover{
+      transform:translateY(-6px);
+  }
+
+  .card-icon{
+      width:90px;
+      height:90px;
+
+      border-radius:24px;
+
+      display:flex;
+      align-items:center;
+      justify-content:center;
+
+      font-size:38px;
+      color:white;
+  }
+
+  .card-icon.blue{
+      background:linear-gradient(
+          135deg,
+          #3b82f6,
+          #2563eb
+      );
+  }
+
+  .card-icon.red{
+      background:linear-gradient(
+          135deg,
+          #ef4444,
+          #dc2626
+      );
+  }
+
+  .dashboard-card h2{
+      font-size:28px;
+      color:#64748b;
+      margin-bottom:10px;
+  }
+
+  .dashboard-card p{
+      font-size:54px;
+      font-weight:900;
+      color:#0f172a;
+  }
+
+  /* =========================================
+    HEALTH TIP
+  ========================================= */
+
+  .health-tip-card{
+      background:white;
+
+      border-radius:30px;
+
+      padding:40px;
+
+      box-shadow:0 10px 30px rgba(0,0,0,0.06);
+  }
+
+  .health-tip-card h2{
+      font-size:38px;
+      color:#0f172a;
+
+      display:flex;
+      align-items:center;
+      gap:14px;
+
+      margin-bottom:18px;
+  }
+
+  .health-tip-card p{
+      font-size:24px;
+      line-height:1.8;
+      color:#475569;
+  }
+
+  /* =========================================
+    RESPONSIVE
+  ========================================= */
+
+  @media(max-width:1100px){
+
+      .dashboard-hero{
+          grid-template-columns:1fr;
+      }
+  }
+
+  @media(max-width:768px){
+
+      .dashboard-title{
+          font-size:48px;
+      }
+
+      .dashboard-subtitle{
+          font-size:18px;
+      }
+
+      .water-card{
+          width:100%;
+      }
+
+      .dashboard-card{
+          padding:28px;
+      }
+
+      .dashboard-card h2{
+          font-size:22px;
+      }
+
+      .dashboard-card p{
+          font-size:40px;
+      }
+
+      .health-tip-card h2{
+          font-size:28px;
+      }
+
+      .health-tip-card p{
+          font-size:18px;
+      }
+  }

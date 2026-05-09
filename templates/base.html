@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>MediCare+</title>
+
+    <!-- MAIN CSS -->
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/navbar.css') }}"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/dashboard.css') }}"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/forms.css') }}"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/alerts.css') }}"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/responsive.css') }}"
+    />
+
+    <!-- FONT AWESOME -->
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+  </head>
+
+  <body>
+    <div class="layout">
+      <!-- SIDEBAR -->
+
+      <aside class="sidebar">
+        <!-- LOGO -->
+
+        <div class="logo">
+          <i class="fa-solid fa-heart-pulse"></i>
+
+          <h1>MediCare+</h1>
+        </div>
+
+        <!-- NAVIGATION -->
+
+        <nav class="nav-links">
+          <a href="/dashboard">
+            <i class="fa-solid fa-table-columns"></i>
+            <span>Dashboard</span>
+          </a>
+
+          <a href="/add-medicine">
+            <i class="fa-solid fa-capsules"></i>
+            <span>Add Medicine</span>
+          </a>
+
+          <a href="/medicine-list">
+            <i class="fa-solid fa-notes-medical"></i>
+            <span>Medicine List</span>
+          </a>
+
+          <a href="/history">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            <span>History</span>
+          </a>
+
+          <a href="/notifications">
+            <i class="fa-solid fa-bell"></i>
+            <span>Notifications</span>
+          </a>
+
+          <a href="/profile">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+          </a>
+
+          <a href="/settings">
+            <i class="fa-solid fa-gear"></i>
+            <span>Settings</span>
+          </a>
+        </nav>
+      </aside>
+
+      <!-- MAIN CONTENT -->
+
+      <main class="main-content">
+        <!-- GLOBAL DATE TIME CARD -->
+
+        <div class="global-datetime-card">
+          <div id="liveDate" class="global-date"></div>
+
+          <div id="liveTime" class="global-time"></div>
+        </div>
+
+        <!-- FLASH MESSAGES -->
+
+        {% with messages = get_flashed_messages(with_categories=true) %} {% if
+        messages %}
+
+        <div class="flash-container">
+          {% for category, message in messages %}
+
+          <div class="flash-message {{ category }} auto-hide">
+            <span>{{ message }}</span>
+
+            <button class="close-flash">&times;</button>
+          </div>
+
+          {% endfor %}
+        </div>
+
+        {% endif %} {% endwith %}
+
+        <!-- PAGE CONTENT -->
+
+        {% block content %} {% endblock %}
+      </main>
+    </div>
+
+    <!-- GLOBAL DATE TIME SCRIPT -->
+
+    <script>
+      function updateDateTime() {
+        const now = new Date();
+
+        const dateOptions = {
+          weekday: "long",
+          day: "2-digit",
+          month: "long",
+          year: "numeric",
+        };
+
+        const timeOptions = {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: true,
+        };
+
+        const formattedDate = now.toLocaleDateString("en-US", dateOptions);
+
+        const formattedTime = now.toLocaleTimeString("en-US", timeOptions);
+
+        const dateElement = document.getElementById("liveDate");
+
+        const timeElement = document.getElementById("liveTime");
+
+        if (dateElement) {
+          dateElement.innerHTML = formattedDate;
+        }
+
+        if (timeElement) {
+          timeElement.innerHTML = formattedTime;
+        }
+      }
+
+      updateDateTime();
+
+      setInterval(updateDateTime, 1000);
+    </script>
+
+    <!-- FLASH MESSAGE AUTO HIDE -->
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const flashMessages = document.querySelectorAll(".auto-hide");
+
+        flashMessages.forEach((flash) => {
+          setTimeout(() => {
+            flash.style.opacity = "0";
+
+            flash.style.transform = "translateX(100px)";
+
+            setTimeout(() => {
+              flash.remove();
+            }, 500);
+          }, 5000);
+        });
+
+        document.querySelectorAll(".close-flash").forEach((btn) => {
+          btn.addEventListener("click", function () {
+            this.parentElement.remove();
+          });
+        });
+      });
+    </script>
+
+    <!-- MEDICINE ALARM AUDIO -->
+
+    <audio id="medicineAlarm" preload="auto" loop>
+      <source
+        src="{{ url_for('static', filename='sounds/alarm.mp3') }}"
+        type="audio/mpeg"
+      />
+    </audio>
+
+    <!-- REMINDER MODAL -->
+
+    <div id="reminderModal" class="reminder-overlay">
+      <div class="reminder-box">
+        <div class="reminder-icon">
+          <i class="fa-solid fa-bell"></i>
+        </div>
+
+        <h2>Medicine Reminder 💊</h2>
+
+        <p id="reminderText">Time to take medicine</p>
+
+        <button id="stopAlarmBtn">✖ Stop Alarm</button>
+      </div>
+    </div>
+    <script>
+      let alarmEnabled = false;
+
+      const shownReminders = new Set();
+
+      /* ENABLE AUDIO AFTER USER CLICK */
+
+      document.addEventListener("click", () => {
+        alarmEnabled = true;
+      });
+
+      /* PLAY ALARM */
+
+      function playAlarm() {
+        if (!alarmEnabled) return;
+
+        const audio = document.getElementById("medicineAlarm");
+
+        if (audio) {
+          audio.currentTime = 0;
+
+          audio
+            .play()
+            .then(() => {
+              console.log("Alarm Playing");
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        }
+      }
+
+      /* STOP ALARM */
+
+      function stopAlarm() {
+        const audio = document.getElementById("medicineAlarm");
+
+        if (audio) {
+          audio.pause();
+
+          audio.currentTime = 0;
+        }
+
+        document.getElementById("reminderModal").classList.remove("active");
+      }
+
+      /* BUTTON EVENT */
+
+      document
+        .getElementById("stopAlarmBtn")
+        .addEventListener("click", stopAlarm);
+
+      /* SHOW REMINDER */
+
+      function showReminder(medicineName) {
+        document.getElementById("reminderText").innerText =
+          `Take ${medicineName} in 5 minutes`;
+
+        document.getElementById("reminderModal").classList.add("active");
+
+        playAlarm();
+      }
+    </script>
+  </body>
+</html>

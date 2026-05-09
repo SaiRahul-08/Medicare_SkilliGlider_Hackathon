@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Signup - MediCare+</title>
+
+    <!-- CSS -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+
+    <!-- FONT AWESOME -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+  </head>
+
+  <body>
+    <!-- BACKGROUND -->
+
+    <div class="auth-page">
+      <!-- CIRCLES -->
+
+      <div class="auth-circle auth-circle-1"></div>
+
+      <div class="auth-circle auth-circle-2"></div>
+
+      <!-- SIGNUP CARD -->
+
+      <div class="auth-card">
+        <!-- LOGO -->
+
+        <div class="auth-logo">
+          <i class="fa-solid fa-heart-pulse"></i>
+
+          <h1>MediCare+</h1>
+        </div>
+
+        <!-- SUBTITLE -->
+
+        <p class="auth-subtitle">Create your smart medicine reminder account</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %} {% if
+        messages %} {% for category, message in messages %}
+
+        <div class="flash-message {{ category }}">{{ message }}</div>
+
+        {% endfor %} {% endif %} {% endwith %}
+
+        <!-- FORM -->
+
+        <form method="POST">
+          <!-- FULL NAME -->
+
+          <div class="auth-input-group">
+            <i class="fa-solid fa-user"></i>
+
+            <input type="text" name="name" placeholder="Full Name" required />
+          </div>
+
+          <!-- USERNAME -->
+
+          <div class="auth-input-group">
+            <i class="fa-solid fa-id-card"></i>
+
+            <input
+              type="text"
+              name="username"
+              placeholder="Username"
+              required
+            />
+          </div>
+
+          <!-- EMAIL -->
+
+          <div class="auth-input-group">
+            <i class="fa-solid fa-envelope"></i>
+
+            <input
+              type="email"
+              name="email"
+              placeholder="Email Address"
+              required
+            />
+          </div>
+
+          <!-- PASSWORD -->
+
+          <div class="auth-input-group">
+            <i class="fa-solid fa-lock"></i>
+
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              required
+            />
+          </div>
+
+          <!-- BUTTON -->
+
+          <button type="submit" class="auth-btn">
+            <i class="fa-solid fa-user-plus"></i>
+            Create Account
+          </button>
+        </form>
+
+        <!-- LOGIN LINK -->
+
+        <p class="auth-bottom-text">
+          Already have an account?
+
+          <a href="/login">Login</a>
+        </p>
+      </div>
+    </div>
+
+    <script>
+      setTimeout(() => {
+        const flash = document.querySelector(".flash-message");
+
+        if (flash) {
+          flash.style.animation = "fadeOut 0.5s ease forwards";
+
+          setTimeout(() => {
+            flash.remove();
+          }, 500);
+        }
+      }, 10000);
+    </script>
+  </body>
+</html>
